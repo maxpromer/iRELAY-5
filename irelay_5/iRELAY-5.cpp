@@ -4,8 +4,6 @@
 #include "kidbright32.h"
 #include "iRELAY_5.h"
 
-// vTaskDelay(500 / portTICK_RATE_MS);
-
 iRELAY_5::iRELAY_5(int bus_ch, int dev_addr) {
 	channel = bus_ch;
 	address = dev_addr;

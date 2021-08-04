@@ -1,4 +1,4 @@
-const iRELAY_5_BEGIN = "DEV_I2C1.iRELAY_5(0, 0x20)";
+const iRELAY_5_BEGIN = "DEV_I2C1.iRELAY_5(0, 0x38)";
 
 Blockly.JavaScript['irelay_5_set'] = function (block) {
 	var dropdown_ch = block.getFieldValue('ch');

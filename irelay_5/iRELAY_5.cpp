@@ -50,19 +50,10 @@ void iRELAY_5::process(Driver *drv) {
 		case s_detect:
 			// detect i2c device
 			if (i2c->detect(channel, address) == ESP_OK) {
-				// Set mode to OUTPUT
-				uint8_t dataSend[2] = {
-					3,   // Configuration register
-					0x00 // All to OUTPUT
-				};
-				if (i2c->write(channel, address, dataSend, 2) == ESP_OK) {
-					error = false;
-					initialized = true;
-					dataUpdateFlag = true;
-					state = s_poll;
-				} else {
-					state = s_error;
-				}
+				error = false;
+				initialized = true;
+				dataUpdateFlag = true;
+				state = s_poll;
 			} else {
 				state = s_error;
 			}
@@ -70,7 +61,8 @@ void iRELAY_5::process(Driver *drv) {
 
 		case s_poll:
 			if (dataUpdateFlag) {
-				if (i2c->write(channel, address, this->data, 1) == ESP_OK) {
+				uint8_t newData = ~this->data;
+				if (i2c->write(channel, address, &newData, 1) == ESP_OK) {
 					dataUpdateFlag = false;
 				} else {
 					state = s_error;
@@ -116,15 +108,4 @@ void iRELAY_5::set_all(bool value) {
 		this->data = 0x00;
 	}
 	this->dataUpdateFlag = true;
-}
-
-void iRELAY_5::on_auto_off(uint8_t ch, uint32_t time) {
-	this->set(ch, 1);
-
-	xTaskCreate([](void* this_obj) {
-		vTaskDelay((time * 1000.0) / portTICK_RATE_MS);
-		(iRELAY_5*)(this_obj)->set(ch, 0);
-
-		vTaskDelete(NULL);
-	}, "iRELAY_5 auto on off", 256, (void*)(this), 10, NULL);
 }

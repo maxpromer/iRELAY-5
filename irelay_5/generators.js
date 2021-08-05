@@ -19,6 +19,14 @@ Blockly.JavaScript['irelay_5_on_auto_off'] = function (block) {
 	var dropdown_ch = block.getFieldValue('ch');
 	var value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
 
-	var code = iRELAY_5_BEGIN + `.on_auto_off(${dropdown_ch}, ${value_time});\n`;
+	var code = `
+	xTaskCreate([](void*) {
+		${iRELAY_5_BEGIN}.set(${dropdown_ch}, 1);
+		vTaskDelay((${value_time} * 1000.0) / portTICK_RATE_MS);
+		${iRELAY_5_BEGIN}.set(${dropdown_ch}, 0);
+
+		vTaskDelete(NULL);
+	}, "iRELAY_5 auto on off", 1024, NULL, 10, NULL);
+	`;
 	return code;
 };

@@ -36,7 +36,6 @@ class iRELAY_5 : public Device {
 		// method
 		void set(uint8_t ch, bool value) ;
 		void set_all(bool value) ;
-		void set(uint8_t ch, uint32_t time) ;
 
 };
 
